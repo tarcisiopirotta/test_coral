@@ -1041,116 +1041,439 @@ body {
   fill: var(--error);
 }
 
-/* Responsiveness overrides */
+/* ==========================================
+   MOBILE: layout fluido sin altura forzada
+   ========================================== */
 @media (max-width: 520px) {
+  /* ---- Estructural ---- */
   .app-wrapper {
-    padding: 12px 10px;
-    gap: 12px;
+    padding: 8px 10px;
+    gap: 8px;
+    min-height: auto;
+    justify-content: flex-start;
   }
 
   .glass-panel {
-    padding: 20px 14px;
-    border-radius: 20px;
+    padding: 14px 12px;
+    border-radius: 16px;
+    flex-grow: 0;
+    overflow: visible;
+  }
+
+  .screen.active {
+    flex: none;
+  }
+
+  body {
+    justify-content: flex-start;
+    padding: 0;
+  }
+
+  .main-footer {
+    display: none;
+  }
+
+  /* ---- Header compacto ---- */
+  .main-header {
+    padding: 2px 2px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px -2px rgba(16, 185, 129, 0.3);
+  }
+
+  .logo-icon i {
+    width: 18px;
+    height: 18px;
   }
 
   .brand-text h1 {
-    font-size: 1.15rem;
+    font-size: 1rem;
   }
 
   .brand-text p {
     display: none;
   }
 
-  .hero-content h2 {
-    font-size: 1.3rem;
+  .theme-toggle-btn {
+    width: 32px;
+    height: 32px;
   }
 
-  .pulsing-mic {
-    width: 60px;
-    height: 60px;
+  .theme-toggle-btn i {
+    width: 16px;
+    height: 16px;
   }
 
-  .pulsing-mic i {
-    width: 24px;
-    height: 24px;
-  }
-
-  .calibration-stats {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .actions-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .voice-stats-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .visualizer-overlay {
-    padding: 20px 16px;
-  }
-
-  .pitch-display span:first-child {
-    font-size: 2.2rem;
-  }
-
-  .pitch-display.mini span:first-child {
-    font-size: 1.6rem;
-  }
-
-  #target-note-name {
-    font-size: 2.2rem;
-  }
-
-  .result-showcase h2 {
-    font-size: 1.5rem;
-  }
-
-  .stat-val {
-    font-size: 1.3rem;
-  }
-
-  .stage-header {
-    margin-bottom: 16px;
-  }
-
-  .target-card {
-    padding: 14px;
-  }
-
-  .tuning-gauge-container {
-    padding: 14px;
-  }
-
+  /* ---- Botones compactos ---- */
   .btn-primary,
   .btn-secondary {
-    padding: 12px 20px;
-    font-size: 0.85rem;
+    padding: 10px 18px;
+    font-size: 0.8rem;
+    gap: 6px;
   }
 
-  .main-header {
-    padding: 4px 4px;
+  .btn-primary {
+    box-shadow: 0 6px 12px -4px rgba(16, 185, 129, 0.25);
   }
 
-  .logo-icon {
+  .btn-icon {
     width: 36px;
     height: 36px;
   }
 
-  .logo-icon i {
+  .btn-icon i {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ---- SCREEN 0: Welcome ---- */
+  .hero-content {
+    gap: 10px;
+  }
+
+  .pulsing-mic {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 4px;
+  }
+
+  .pulsing-mic i {
     width: 20px;
     height: 20px;
   }
 
-  .hero-content {
-    gap: 14px;
+  .hero-content h2 {
+    font-size: 1.1rem;
+  }
+
+  .hero-content p {
+    font-size: 0.8rem;
+  }
+
+  .info-badges {
+    display: none;
+  }
+
+  .mic-disclaimer {
+    display: none;
+  }
+
+  /* ---- SCREEN 1: Error ---- */
+  .error-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .error-icon i {
+    width: 22px;
+    height: 22px;
+  }
+
+  .error-content h2 {
+    font-size: 1.1rem;
+  }
+
+  .error-content p {
+    font-size: 0.8rem;
+  }
+
+  .error-content {
+    gap: 10px;
+  }
+
+  /* ---- Stages header ---- */
+  .stage-header {
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+
+  .stage-badge {
+    font-size: 0.65rem;
+    padding: 3px 10px;
+  }
+
+  .stage-header h2 {
+    font-size: 1rem;
+  }
+
+  .progress-bar-container {
+    height: 4px;
+  }
+
+  /* ---- SCREEN 2: Calibration ---- */
+  .calibration-container {
+    gap: 10px;
+    flex: none;
+  }
+
+  .instruction-box {
+    padding: 10px;
+  }
+
+  .instruction-box h3 {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .instruction-box p {
+    font-size: 0.75rem;
+  }
+
+  .visualizer-overlay {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+
+  .pitch-display span:first-child {
+    font-size: 1.8rem;
+  }
+
+  .pitch-display span:last-child {
+    font-size: 0.8rem;
+    margin-top: -2px;
+  }
+
+  .pitch-display.mini span:first-child {
+    font-size: 1.4rem;
+  }
+
+  .meter-bar-container {
+    height: 6px;
+  }
+
+  .mic-status-label {
+    font-size: 0.7rem;
+  }
+
+  .calibration-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 8px;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    margin-bottom: 3px;
+  }
+
+  .stat-val {
+    font-size: 1.1rem;
+  }
+
+  .stat-hz {
+    font-size: 0.7rem;
+  }
+
+  .actions {
+    padding-top: 6px;
+    flex-shrink: 0;
+  }
+
+  /* ---- SCREEN 3: Voice Results ---- */
+  .result-showcase {
+    gap: 10px;
+    flex: none;
+  }
+
+  .voice-badge-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .voice-badge-icon i {
+    width: 20px;
+    height: 20px;
+  }
+
+  .subtle-title {
+    font-size: 0.7rem;
+    margin-bottom: -6px;
+  }
+
+  .result-showcase h2 {
+    font-size: 1.3rem;
+  }
+
+  .voice-description {
+    font-size: 0.8rem;
+  }
+
+  .voice-stats-row {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    margin: 4px 0;
+  }
+
+  .mini-stat {
+    padding: 8px 4px;
+  }
+
+  .mini-label {
+    font-size: 0.6rem;
+  }
+
+  .mini-val {
+    font-size: 0.85rem;
+  }
+
+  .coral-chart-comparison {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .coral-chart-comparison p {
+    font-size: 0.7rem;
+  }
+
+  .chart-item {
+    grid-template-columns: 56px 1fr;
+    gap: 6px;
+  }
+
+  .chart-label {
+    font-size: 0.65rem;
+  }
+
+  .chart-track {
+    height: 6px;
+  }
+
+  /* ---- SCREEN 4: Pitch Challenge ---- */
+  .challenge-main {
+    gap: 10px;
+    flex: none;
   }
 
   .challenge-meta {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  .score-display,
+  .note-progress {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+
+  .target-card {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .target-title {
+    font-size: 0.6rem;
+  }
+
+  .target-note-container {
+    gap: 0;
+  }
+
+  #target-note-name {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  #target-note-frequency {
+    font-size: 0.7rem;
+  }
+
+  .note-play-status {
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  #playback-status {
+    font-size: 0.7rem;
+  }
+
+  .tuning-gauge-container {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .tuning-gauge-scale {
+    font-size: 0.6rem;
+  }
+
+  .gauge-track {
+    height: 18px;
+  }
+
+  .cents-diff-display {
+    font-size: 0.85rem;
+  }
+
+  .singing-panel {
+    gap: 8px;
+  }
+
+  .hold-label {
+    font-size: 0.7rem;
+  }
+
+  .hold-bar {
+    height: 8px;
+  }
+
+  .challenge-instruction {
+    font-size: 0.75rem;
+  }
+
+  /* ---- SCREEN 5: Final Results ---- */
+  .trophy-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 4px;
+  }
+
+  .trophy-icon i {
+    width: 24px;
+    height: 24px;
+  }
+
+  .tuning-feedback-box {
+    padding: 10px;
+  }
+
+  .tuning-feedback-box h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .tuning-feedback-box p {
+    font-size: 0.75rem;
+  }
+
+  .coral-details-card {
+    padding: 10px;
+  }
+
+  .coral-details-card h4 {
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+  }
+
+  .stats-summary-list {
+    gap: 6px;
+  }
+
+  .stats-summary-list li {
+    font-size: 0.75rem;
+    padding-bottom: 5px;
+  }
+
+  .actions-grid {
     gap: 8px;
   }
 }
