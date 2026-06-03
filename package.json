@@ -1,0 +1,11 @@
+{
+  "name": "test-coral",
+  "version": "1.0.0",
+  "description": "CoralTester - Probador Coral Inteligente",
+  "scripts": {
+    "dev": "npx -y http-server ./ -p 5173 -c-1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

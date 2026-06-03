@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoralTester - Analizador Coral Inteligente</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Mide tu rango vocal, clasifica tu voz en la clasificación coral y entrena tu afinación interactiva con escalas usando p5.js.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- p5.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+  <!-- Background Canvas Container for p5.js -->
+  <div id="canvas-container"></div>
+
+  <!-- App Wrapper -->
+  <main class="app-wrapper">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="brand">
+        <div class="logo-icon">
+          <i data-lucide="music-4"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Coral<span>Tester</span></h1>
+          <p>Tu afinador y clasificador vocal interactivo</p>
+        </div>
+      </div>
+      
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema">
+        <i data-lucide="sun" class="sun-icon"></i>
+        <i data-lucide="moon" class="moon-icon"></i>
+      </button>
+    </header>
+
+    <!-- Main Content Panel (Glass Card) -->
+    <section class="glass-panel" id="main-panel">
+      <!-- Screen 0: Welcome / Microphone Request -->
+      <div class="screen active" id="screen-welcome">
+        <div class="hero-content">
+          <div class="pulsing-mic">
+            <i data-lucide="mic"></i>
+          </div>
+          <h2>Descubre y perfecciona tu voz coral</h2>
+          <p>CoralTester analiza tu voz en tiempo real para determinar tu cuerda coral (Soprano, Alto, Tenor, Bajo) y evalúa tu afinación imitando escalas musicales.</p>
+          
+          <div class="info-badges">
+            <div class="badge">
+              <i data-lucide="activity"></i>
+              <span>Análisis de Frecuencia</span>
+            </div>
+            <div class="badge">
+              <i data-lucide="award"></i>
+              <span>Evaluación de Afinación</span>
+            </div>
+            <div class="badge">
+              <i data-lucide="zap"></i>
+              <span>Autocorrelación Veloz</span>
+            </div>
+          </div>
+
+          <button id="btn-start" class="btn-primary">
+            <span>Comenzar Prueba</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+          
+          <p class="mic-disclaimer"><i data-lucide="shield-check"></i> Necesitamos acceso al micrófono para analizar tu canto en tiempo real.</p>
+        </div>
+      </div>
+
+      <!-- Screen 1: Microphone Permission Error (Fallback) -->
+      <div class="screen" id="screen-mic-error">
+        <div class="error-content">
+          <div class="error-icon">
+            <i data-lucide="mic-off"></i>
+          </div>
+          <h2>Acceso al Micrófono Denegado</h2>
+          <p>Para poder usar CoralTester, necesitamos acceso a tu micrófono. Por favor, otorga los permisos en la barra de direcciones de tu navegador y vuelve a intentarlo.</p>
+          <p id="mic-error-details" class="error-details" style="display: none;"></p>
+          <button id="btn-retry-mic" class="btn-secondary">
+            <i data-lucide="rotate-ccw"></i>
+            <span>Reintentar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Screen 2: Vocal Range Calibration (Stage 1) -->
+      <div class="screen" id="screen-calibration">
+        <div class="stage-header">
+          <div class="stage-badge">Estadio 1</div>
+          <h2>Clasificación de Cuerda Coral</h2>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="calibration-progress" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="calibration-container">
+          <div class="instruction-box">
+            <h3 id="calib-instruction-title">Canta tu nota más GRAVE</h3>
+            <p id="calib-instruction-desc">Haz un sonido cómodo tan bajo como puedas y sostenlo por 2 segundos.</p>
+          </div>
+
+          <div class="visualizer-overlay">
+            <div class="pitch-display">
+              <span id="calib-note">--</span>
+              <span id="calib-hz">0.0 Hz</span>
+            </div>
+            <div class="meter-bar-container">
+              <div class="meter-bar-fill" id="calib-volume-bar"></div>
+            </div>
+            <div class="mic-status-label" id="calib-status-text">Esperando voz...</div>
+          </div>
+
+          <div class="calibration-stats">
+            <div class="stat-card">
+              <span class="stat-label">Nota más Baja</span>
+              <span class="stat-val" id="val-low-note">--</span>
+              <span class="stat-hz" id="val-low-hz">0 Hz</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Nota más Alta</span>
+              <span class="stat-val" id="val-high-note">--</span>
+              <span class="stat-hz" id="val-high-hz">0 Hz</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="btn-next-calib" class="btn-primary" disabled>
+              <span>Siguiente</span>
+              <i data-lucide="check"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 3: Calibration Results & Voice Type -->
+      <div class="screen" id="screen-voice-results">
+        <div class="result-showcase">
+          <div class="voice-badge-icon">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <span class="subtle-title">Tu cuerda coral clasificada es</span>
+          <h2 id="voice-type-title">Bajo/Barítono</h2>
+          <p id="voice-type-desc" class="voice-description">Tu voz posee un registro profundo y cálido, ideal para sostener la armonía y la base del coro.</p>
+
+          <div class="voice-stats-row">
+            <div class="mini-stat">
+              <span class="mini-label">Rango Detectado</span>
+              <span class="mini-val" id="res-vocal-range">E2 - G4</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-label">Frecuencias</span>
+              <span class="mini-val" id="res-hz-range">82 Hz - 392 Hz</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-label">Octavas</span>
+              <span class="mini-val" id="res-octaves">2.2 octavas</span>
+            </div>
+          </div>
+
+          <div class="coral-chart-comparison">
+            <p>Comparación con rangos estándar:</p>
+            <div class="chart-bars">
+              <div class="chart-item" id="chart-soprano">
+                <span class="chart-label">Soprano</span>
+                <div class="chart-track"><div class="chart-fill" style="left: 65%; width: 35%;"></div></div>
+              </div>
+              <div class="chart-item" id="chart-alto">
+                <span class="chart-label">Alto</span>
+                <div class="chart-track"><div class="chart-fill" style="left: 45%; width: 35%;"></div></div>
+              </div>
+              <div class="chart-item" id="chart-tenor">
+                <span class="chart-label">Tenor</span>
+                <div class="chart-track"><div class="chart-fill" style="left: 25%; width: 35%;"></div></div>
+              </div>
+              <div class="chart-item" id="chart-bass">
+                <span class="chart-label">Bajo</span>
+                <div class="chart-track"><div class="chart-fill" style="left: 5%; width: 35%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="btn-proceed-scale" class="btn-primary">
+              <span>Ir al Desafío de Afinación</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 4: Pitch Matching Challenge (Stage 2) -->
+      <div class="screen" id="screen-pitch-challenge">
+        <div class="stage-header">
+          <div class="stage-badge">Estadio 2</div>
+          <h2>Desafío de Afinación</h2>
+          <div class="challenge-meta">
+            <div class="score-display">Puntos: <span id="challenge-score">0</span></div>
+            <div class="note-progress">Nota: <span id="challenge-step">1</span>/5</div>
+          </div>
+        </div>
+
+        <div class="challenge-main">
+          <div class="target-card">
+            <span class="target-title">IMITA ESTA NOTA</span>
+            <div class="target-note-container">
+              <span id="target-note-name">C4</span>
+              <span id="target-note-frequency">261.6 Hz</span>
+            </div>
+            
+            <div class="note-play-status">
+              <button id="btn-hear-note" class="btn-icon" title="Escuchar nota">
+                <i data-lucide="volume-2"></i>
+              </button>
+              <span id="playback-status">Presiona para escuchar</span>
+            </div>
+          </div>
+
+          <!-- Tuning Realtime Gauge -->
+          <div class="tuning-gauge-container">
+            <div class="tuning-gauge-scale">
+              <span class="scale-tick label-flat">-50c (Flat)</span>
+              <span class="scale-tick label-perfect">In Tune</span>
+              <span class="scale-tick label-sharp">+50c (Sharp)</span>
+            </div>
+            
+            <div class="gauge-track">
+              <div class="gauge-center-line"></div>
+              <div class="gauge-indicator" id="gauge-needle" style="left: 50%;"></div>
+              <div class="gauge-sweet-spot"></div>
+            </div>
+
+            <div class="cents-diff-display" id="cents-diff">-</div>
+          </div>
+
+          <div class="singing-panel">
+            <div class="pitch-display mini">
+              <span id="challenge-user-note">--</span>
+              <span id="challenge-user-hz">0.0 Hz</span>
+            </div>
+
+            <div class="hold-progress-container">
+              <span class="hold-label">Mantenla afinada:</span>
+              <div class="hold-bar">
+                <div class="hold-bar-fill" id="hold-progress-bar" style="width: 0%;"></div>
+              </div>
+            </div>
+            
+            <p id="challenge-instruction-text" class="challenge-instruction">Escucha la nota de referencia primero...</p>
+          </div>
+
+          <div class="actions">
+            <button id="btn-start-singing" class="btn-primary" disabled>
+              <i data-lucide="mic"></i>
+              <span>Cantar nota</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 5: Final Evaluation Results -->
+      <div class="screen" id="screen-final-results">
+        <div class="result-showcase">
+          <div class="trophy-icon">
+            <i data-lucide="trophy"></i>
+          </div>
+          <span class="subtle-title">Desafío Completado</span>
+          <h2>Tu afinación es del <span id="final-score-percent">0%</span></h2>
+          
+          <div class="tuning-feedback-box">
+            <h3 id="tuning-rank-title">Oído de Oro</h3>
+            <p id="tuning-rank-desc">¡Excelente! Tu precisión al imitar la escala fue excepcional. Estás completamente listo para formar parte de cualquier ensamble coral.</p>
+          </div>
+
+          <div class="coral-details-card">
+            <h4>Resumen de tu Perfil Vocal</h4>
+            <ul class="stats-summary-list">
+              <li>
+                <span>Tipo de voz coral</span>
+                <strong id="final-voice-type">Tenor</strong>
+              </li>
+              <li>
+                <span>Rango vocal</span>
+                <strong id="final-range">C3 - A4</strong>
+              </li>
+              <li>
+                <span>Precisión media</span>
+                <strong id="final-avg-cents">±12 cents</strong>
+              </li>
+            </ul>
+          </div>
+
+          <div class="actions-grid">
+            <button id="btn-restart" class="btn-secondary">
+              <i data-lucide="rotate-ccw"></i>
+              <span>Empezar de Nuevo</span>
+            </button>
+            
+            <button id="btn-share" class="btn-primary">
+              <i data-lucide="share-2"></i>
+              <span>Compartir Logro</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer / Credits -->
+    <footer class="main-footer">
+      <p>Desarrollado con <i data-lucide="heart" class="heart-icon"></i> usando p5.js y Web Audio API</p>
+    </footer>
+  </main>
+
+  <!-- Script Modules -->
+  <script src="pitch.js?v=7"></script>
+  <script src="audio.js?v=7"></script>
+  <script src="sketch.js?v=7"></script>
+  <script src="app.js?v=7"></script>
+</body>
+</html>
